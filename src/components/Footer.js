@@ -1,9 +1,9 @@
-import '../scss/footer.scss';
+import styles from '../scss/footer.scss';
 const Footer = () => {
   return (
-    <header>
-      <h1>&copy; 2020</h1>
-    </header>
+    <footer className={styles}>
+      <p>&copy; 2020</p>
+    </footer>
   );
 };
 
