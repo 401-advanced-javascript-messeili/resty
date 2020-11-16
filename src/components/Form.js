@@ -1,48 +1,71 @@
 import '../scss/form.scss';
 import React from 'react';
+const superagent = require('superagent');
 class Form extends React.Component {
   constructor(props) {
     super(props);
     this.state = { url: '', method: '' };
   }
 
-  handleChangeUrl = (e) => {
+  handleChangeUrl = async (e) => {
     e.preventDefault();
-    this.setState({ url: e.target.url.value, method: e.target.method.value });
-    console.log(this.state.method);
-  };
+    await this.setState({ url: e.target.url.value, method: e.target.method.value });
+    console.log(this.state);
+    switch (this.state.method) {
+      case 'GET':
+        superagent.get(`${this.state.url}`).then((data) => {
+          this.props.handler(data);
+        });
+        break;
+      case 'POST':
+        superagent.post(`${this.state.url}`).then((data) => {
+          this.props.handler(data);
+        });
+        break;
+      case 'PATCH':
+        superagent.patch(`${this.state.url}`).then((data) => {
+          this.props.handler(data);
+        });
+        break;
+      case 'DELETE':
+        superagent.delete(`${this.state.url}`).then((data) => {
+          this.props.handler(data);
+        });
+        break;
+      case 'PUT':
+        superagent.put(`${this.state.url}`).then((data) => {
+          this.props.handler(data);
+        });
+        break;
 
-  clickHandler = () => {};
+      default:
+        break;
+    }
+  };
 
   render() {
     return (
       <main>
         <div>
-          <form class="column" onSubmit={this.handleChangeUrl}>
-            <div class="row">
-              <label for="url">URL</label>
-              <input id="url" type="url" name="url" value={this.state.method.value} />
+          <form className="column" onSubmit={this.handleChangeUrl}>
+            <div className="row">
+              <label htmlFor="url">URL</label>
+              <input id="url" type="url" name="url" value={this.state.url.value} />
               <button type="submit"> GO </button>
             </div>
-            <div class="row">
-              <label for="method">Get</label>
-              <input type="radio" value="Get " name="method" />
-              <label for="method">Post</label>
-              <input type="radio" value="Post " name="method" />
-              <label for="method">Delete</label>
-              <input type="radio" value="Delete " name="method" />
-              <label for="method">Put</label>
-              <input type="radio" value="Put " name="method" />
+            <div className="row">
+              <label htmlFor="method">Get</label>
+              <input type="radio" value="GET" name="method" defaultChecked />
+              <label htmlFor="method">Post</label>
+              <input type="radio" value="POST" name="method" />
+              <label htmlFor="method">Delete</label>
+              <input type="radio" value="PATCH" name="method" />
+              <label htmlFor="method">Patch</label>
+              <input type="radio" value="DELETE" name="method" />
+              <label htmlFor="method">Put</label>
+              <input type="radio" value="PUT" name="method" />
             </div>
           </form>
-          <table>
-            <thead>
-              <tr class="row">
-                <td>{this.state.method}</td>
-                <td>{this.state.url}</td>
-              </tr>
-            </thead>
-          </table>
         </div>
       </main>
     );
