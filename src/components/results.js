@@ -1,7 +1,9 @@
-import '../scss/results.scss';
 import React from 'react';
+import '../scss/results.scss';
 import ReactJson from 'react-json-view';
-export default function Results({ count, results, headers }) {
+import { If, Then, Else } from './if';
+
+function Results({ count, results, headers }) {
   return (
     <div className="container">
       <div id="item">
@@ -16,3 +18,5 @@ export default function Results({ count, results, headers }) {
     </div>
   );
 }
+
+export default Results;
