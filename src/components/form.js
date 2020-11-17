@@ -10,12 +10,32 @@ class Form extends React.Component {
 
   handleChangeUrl = async (e) => {
     e.preventDefault();
-    await this.setState({ url: e.target.url.value, method: e.target.method.value });
-    console.log(this.state);
+    await this.setState({ url: e.target.url.value, method: e.target.method.value, body: e.target.body.value });
+    await this.setState({ whileFetching: true });
     switch (this.state.method) {
       case 'GET':
         superagent.get(`${this.state.url}`).then((data) => {
-          this.props.handler(data);
+          let info = { url: e.target.url.value, method: e.target.method.value, body: e.target.body.value };
+          let history;
+
+          if (localStorage.getItem('history')) {
+            history = JSON.parse(localStorage.getItem('history'));
+          } else {
+            history = [];
+          }
+          let check = false;
+          history.forEach((element) => {
+            if (element.url === info.usl && element.method === info.method) {
+              check = true;
+            }
+            if (check) {
+              this.props.handler(data);
+            } else {
+              history.push(info);
+              localStorage.setItem('history', JSON.stringify(history));
+              this.props.handler(data);
+            }
+          });
         });
         break;
       case 'POST':
@@ -69,7 +89,7 @@ class Form extends React.Component {
             </div>
           </form>
         </div>
-        <If condition={this.state.isFetching === true}>
+        <If condition={this.state.whileFetching === true}>
           <Then>
             <div id="img-div">
               <img src="https://media.giphy.com/media/3ohzdOrcdpiD26TPt6/giphy.gif" alt="loading" width="50px"></img>
