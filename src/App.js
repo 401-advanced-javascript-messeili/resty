@@ -1,8 +1,9 @@
 import React from 'react';
-import Header from './components/Header';
-import Form from './components/Form';
-import Footer from './components/Footer';
-import Results from './components/Results';
+import Header from './components/header';
+import Form from './components/form';
+import Footer from './components/footer';
+import Results from './components/results';
+import History from './components/history';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,20 +11,39 @@ class App extends React.Component {
     this.state = {
       count: 0,
       results: [],
+      errorBody: '',
+      error: false,
+      headers: {},
     };
   }
   handleForm = async (data) => {
-    console.log('Hi from the App', data.body);
-    await this.setState({ count: data.body.count ? data.body.count : 1, results: data.body, headers: data.headers });
+    try {
+      console.log('Hi from the App', data.body);
+      await this.setState({ count: data.body.count ? data.body.count : 1, results: data.body, headers: data.headers });
+    } catch (err) {
+      console.log(err.message);
+      this.errorHandler(err.message);
+    }
   };
+
+  errorHandler = (err) => {
+    this.setState({ error: true, errorBody: err });
+  };
+  errorUpdate = () => {
+    this.setState({ error: false });
+  };
+
   render() {
     return (
       <>
         <Header />
-        {/* <button data-testid="button" onClick={() => this.setState({ num: this.state.num + 1 })}></button>
-        <p data-testid="output">{this.state.num}</p> */}
-        <Form title={'Get Star Wars People'} handler={this.handleForm} />
-        <Results count={this.state.count} results={this.state.results} headers={this.state.headers} />
+
+        <Form handler={this.handleForm} errorHandler={this.errorHandler} />
+        <ul>
+          <h3>History</h3>
+          <History />
+        </ul>
+        <Results errorUpdate={this.errorUpdate} count={this.state.count} results={this.state.results} headers={this.state.headers} error={{ error: this.state.error, errorBody: this.state.errorBody }} />
         <Footer />
       </>
     );
