@@ -6,10 +6,11 @@ export default function History(props) {
   return (
     <>
       {history.map((query) => {
+        console.log('query', query);
         return (
           <li onClick={handelClick} key={query.method + query.url}>
-            <section id="spanMethod">{query.method}</section>
-            <section id="spanURL">{query.url}</section>
+            <section id='spanMethod'>{query.method}</section>
+            <section id='spanURL'>{query.url}</section>
           </li>
         );
       })}
@@ -20,9 +21,9 @@ export default function History(props) {
 function handelClick(e) {
   const obj = { url: e.currentTarget.childNodes[1].firstChild.data, method: e.currentTarget.childNodes[0].firstChild.data };
 
-  const selected = document.getElementById(`link`);
+  const selected = document.getElementById(`url`);
   selected.value = obj.url;
-  const radiobtn = document.getElementById(obj.method + 'input');
+  const radiobtn = document.getElementById(obj.method);
   radiobtn.checked = true;
   const button = document.getElementById('btn');
   button.click();

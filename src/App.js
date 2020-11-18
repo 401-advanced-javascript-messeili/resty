@@ -17,28 +17,33 @@ class App extends React.Component {
     };
   }
   handleForm = async (data) => {
-    console.log('Hi from the App', data.body);
-    await this.setState({ count: data.body.count ? data.body.count : 1, results: data.body, headers: data.headers });
+    try {
+      console.log('Hi from the App', data.body);
+      await this.setState({ count: data.body.count ? data.body.count : 1, results: data.body, headers: data.headers });
+    } catch (err) {
+      console.log(err.message);
+      this.errorHandler(err.message);
+    }
   };
 
-  error = (err) => {
+  errorHandler = (err) => {
     this.setState({ error: true, errorBody: err });
+  };
+  errorUpdate = () => {
+    this.setState({ error: false });
   };
 
   render() {
     return (
       <>
         <Header />
-        {/* <main>
-          <ul>
-            <h3>History</h3>
-            <History />
-          </ul>
-          <Form errorHandler={this.error} handler={this.update} />
-          <Results errorBody={this.state.errorBody} isError={this.state.isError} headers={this.state.headers} count={this.state.Count} results={this.state.results} />
-        </main> */}
-        <Form title={'Get Star Wars People'} handler={this.handleForm} />
-        <Results count={this.state.count} results={this.state.results} headers={this.state.headers} />
+
+        <Form handler={this.handleForm} errorHandler={this.errorHandler} />
+        <ul>
+          <h3>History</h3>
+          <History />
+        </ul>
+        <Results errorUpdate={this.errorUpdate} count={this.state.count} results={this.state.results} headers={this.state.headers} error={{ error: this.state.error, errorBody: this.state.errorBody }} />
         <Footer />
       </>
     );
